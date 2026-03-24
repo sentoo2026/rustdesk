@@ -10,12 +10,24 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
+
+      - name: Install vcpkg and dependencies
+        uses: johnwason/vcpkg-action@v6
+        with:
+          triplet: x64-windows-static
+          pkgs: libvpx libvpx opus aom
+
+      - name: Set VCPKG_ROOT
+        run: echo "VCPKG_ROOT=$env:VCPKG_ROOT" >> $env:GITHUB_ENV
+
       - name: Install Rust
         uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
+
       - name: Build
         run: cargo build --release
+
       - name: Upload exe
         uses: actions/upload-artifact@v4
         with:
